@@ -4,10 +4,7 @@ import org.launchcode.codingevents.data.EventData;
 import org.launchcode.codingevents.models.Event;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,10 +55,11 @@ public class EventController {
    }
 
     @PostMapping("save")
-    public String processCreateEventForm(@RequestParam String eventName,
-                                         @RequestParam String eventDescription) {
+//    public String processCreateEventForm(@RequestParam String eventName,
+//                                         @RequestParam String eventDescription) {
+    public String processCreateEventForm(@ModelAttribute Event newEvent) {
         //events.put(eventName, eventDescription);
-        EventData.add(new Event(eventName, eventDescription));
+        EventData.add(newEvent);
         return "redirect:/events";
     }
 
@@ -80,6 +78,35 @@ public class EventController {
             for (int id : eventIds) {
                 EventData.remove(id);
             }
+        }
+        return "redirect:/events";
+    }
+
+    @GetMapping("edit/{eventId}")
+    public String displayEditForm(Model model, @PathVariable Integer eventId) {
+        // controller code will go here
+        if (eventId == null) {
+
+            return "error"; // Replace "error" with the appropriate view name
+        }
+        Event eventToEdit = EventData.getById(eventId);
+        if (eventToEdit == null) {
+            return "null";
+        }
+        model.addAttribute("event", eventToEdit);
+        String title = "Edit Event " + eventToEdit.getName() + " (id=" + eventToEdit.getId() + ")";
+        model.addAttribute("title", title );
+        return "events/edit";
+    }
+
+    @PostMapping("edit")
+    public String processEditForm(Integer eventId, String name, String description) {
+        // controller code will go here
+        Event eventToEdit = EventData.getById(eventId);
+        if (eventToEdit != null) {
+            eventToEdit.setName(name);
+            eventToEdit.setDescription(description);
+
         }
         return "redirect:/events";
     }
