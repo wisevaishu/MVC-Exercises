@@ -11,6 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//import javax.validation.*;
+import org.springframework.validation.Errors;
+
+import jakarta.validation.Valid;
+
+
 @Controller
 @RequestMapping("events")
 public class EventController {
@@ -40,19 +46,27 @@ public class EventController {
         return "events/index";
     }
 
+
+
     @GetMapping("create")
     public String renderCreateEventForm(Model model) {
         model.addAttribute("title", "Create Event");
+        model.addAttribute(new Event());
         return "events/create";
    }
 
-   @PostMapping("create")
-   public String createEvent(@RequestParam String eventName) {
-        //events.add(eventName);
-//       return "redirect:";
-       //events.add(new Event(eventName));
-       return "redirect:/events";
-   }
+    @PostMapping("create")
+    public String processCreateEventForm(@ModelAttribute @Valid Event newEvent,
+                                         Errors errors, Model model) {
+        if(errors.hasErrors()) {
+            model.addAttribute("title", "Create Event");
+            //model.addAttribute("errMsg", errors.getAllErrors().get(0).getDefaultMessage());
+            return "events/create";
+        }
+        EventData.add(newEvent);
+        return "redirect:/events";
+    }
+
 
     @PostMapping("save")
 //    public String processCreateEventForm(@RequestParam String eventName,
