@@ -2,6 +2,7 @@ package org.launchcode.codingevents.models;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
@@ -25,15 +26,32 @@ public class Event {
     @Email(message = "Invalid email try again")
     private String contactEmail;
 
-    public Event(String name, String description, String contactEmail) {
+    @NotBlank(message = "Location cannot be left blank.")
+    private String location;
+
+    private String isPresent;
+
+    @Positive(message = "Number of attendees must be one or more.")
+    private int numberOfAttendees;
+
+
+    public Event(String name, String description, String contactEmail, String location, String isPresent, int numberOfAttendees, EventType type) {
+        this();
         this.name = name;
         this.description = description;
         this.contactEmail = contactEmail;
-        this.id=nextId;
-        nextId++;
+        this.location = location;
+        this.isPresent = isPresent;
+        this.numberOfAttendees = numberOfAttendees;
+
     }
 
-    public Event() {}
+    private EventType type;
+
+    public Event() {
+        this.id = nextId;
+        nextId++;
+    }
 
     public String getName() {
         return name;
@@ -57,6 +75,38 @@ public class Event {
 
     public void setContactEmail(String contactEmail) {
         this.contactEmail = contactEmail;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String isPresent() {
+        return isPresent;
+    }
+
+    public void setPresent(String present) {
+        isPresent = present;
+    }
+
+    public int getNumberOfAttendees() {
+        return numberOfAttendees;
+    }
+
+    public void setNumberOfAttendees(int numberOfAttendees) {
+        this.numberOfAttendees = numberOfAttendees;
+    }
+
+    public EventType getType() {
+        return type;
+    }
+
+    public void setType(EventType type) {
+        this.type = type;
     }
 
     public int getId() {
